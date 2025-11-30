@@ -7,7 +7,7 @@ export default function Navbar() {
     <nav className="bg-white text-black px-8 py-6 flex items-center justify-between h-28">
       {/* Left: Logo */}
       <div>
-        <div className="w-28 h-24 rounded-full border-2 border-black overflow-hidden">
+        <div className="w-23 h-20 rounded-full border-2 border-black overflow-hidden">
           <Image
             src="/images/logo.webp"
             alt="Logo"
