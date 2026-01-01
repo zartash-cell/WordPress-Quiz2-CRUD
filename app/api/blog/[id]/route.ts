@@ -5,23 +5,25 @@ import Blog from "@/models/Blog";
 
 // DELETE /api/blog/[id]
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } } // fixed type for Next.js 16
+  request: Request,
+  context: { params: { id: string } } 
 ) {
+  const { params } = context;
+  const { id } = params;
+
   await connectDB();
 
   // ===============================
   // AUTH DISABLED FOR ASSIGNMENT
   // ===============================
   /*
-  const authHeader = req.headers.get("Authorization") || "";
+  const authHeader = request.headers.get("Authorization") || "";
   const token = authHeader.replace("Bearer ", "");
-
   const user = verifyToken(token);
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   */
 
-  const blog = await Blog.findById(params.id);
+  const blog = await Blog.findById(id);
   if (!blog) return NextResponse.json({ error: "Blog not found" }, { status: 404 });
 
   // ===============================
