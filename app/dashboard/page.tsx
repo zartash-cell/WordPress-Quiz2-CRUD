@@ -12,31 +12,45 @@ interface Blog {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+
+  // Auth loading disabled for assignment
+  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  //  Token kept for future use
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-  // Redirect if not logged in
+  /* =====================================================
+     AUTH REDIRECT (DISABLED FOR ASSIGNMENT SUBMISSION)
+     Sir requirement: all pages accessible without login
+     ===================================================== */
+
+  /*
   useEffect(() => {
     if (!token) {
       router.push("/login");
     } else {
-      setLoading(false); // Only show dashboard after token is found
+      setLoading(false);
     }
   }, [router, token]);
+  */
 
-  // Fetch blogs for logged-in user
+  // Fetch blogs (auth header commented)
   async function fetchBlogs() {
+    /*
     if (!token) return;
+    */
 
     const res = await fetch("/api/blog", {
-      headers: { Authorization: `Bearer ${token}` },
+      // headers: { Authorization: `Bearer ${token}` },
     });
+
     const data = await res.json();
     if (!data.error) setBlogs(data.blogs || []);
   }
@@ -44,14 +58,20 @@ export default function DashboardPage() {
   // Create or Update blog
   async function handleSubmit(e: any) {
     e.preventDefault();
+
+    /*
     if (!token) return alert("You are not logged in");
+    */
 
     const method = editingId ? "PATCH" : "POST";
     const url = editingId ? `/api/blog/${editingId}` : "/api/blog";
 
     const res = await fetch(url, {
       method,
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ title, content }),
     });
 
@@ -68,14 +88,17 @@ export default function DashboardPage() {
     }
   }
 
-  // Delete blog
+  //  Delete blog
   async function handleDelete(id: string) {
+    /*
     if (!token) return alert("You are not logged in");
+    */
+
     if (!confirm("Are you sure you want to delete this blog?")) return;
 
     const res = await fetch(`/api/blog/${id}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
+      // headers: { Authorization: `Bearer ${token}` },
     });
 
     const data = await res.json();
@@ -94,13 +117,16 @@ export default function DashboardPage() {
     setEditingId(blog._id);
   }
 
+  //  Auto fetch blogs (no auth dependency)
   useEffect(() => {
-    if (token) fetchBlogs();
-  }, [token]);
+    fetchBlogs();
+  }, []);
 
+  /*
   if (loading) {
     return <div className="text-center mt-20 text-xl">Checking authentication...</div>;
   }
+  */
 
   return (
     <div className="p-10 bg-gray-50 min-h-screen">
@@ -155,7 +181,7 @@ export default function DashboardPage() {
         )}
       </form>
 
-      {/* User Blogs List */}
+      {/* Blog List */}
       <div>
         <h2 className="text-3xl font-bold mb-4">Your Blogs</h2>
 
